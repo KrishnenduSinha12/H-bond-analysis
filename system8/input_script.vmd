@@ -1,0 +1,6 @@
+mol addfile system8/protein_fit.xtc first 1 last -1 step 1 waitfor 2000 
+source /usr/local/lib/vmd/plugins/noarch/tcl/hbonds1.2/hbonds.tcl 
+ set sel1 [atomselect top protein ] 
+ set sel2 [atomselect top none ] 
+hbonds -sel1 $sel1 -dist 3.0 -ang 20 -polar no -DA both -writefile yes -plot no -outfile system8/hbonds.dat -type pair -detailout system8/hbonds-details.dat 
+exit
