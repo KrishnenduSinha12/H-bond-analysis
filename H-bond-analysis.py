@@ -28,7 +28,7 @@ parser.add_argument("-wait",default=2000, type=int, required=False,help="Waiting
 #Parmeters for creating occupancy table
 parser.add_argument("-start",default=1, type=int, help="starting residue",required=False)
 parser.add_argument("-stop",default=1000, type=int, help="stop residue",required=False)
-parser.add_argument("-occupancy",default=20, type=float, required=False,help="minimum occupancy")
+parser.add_argument("-occupancy",default=0, type=float, required=False,help="minimum occupancy")
 parser.add_argument("-o",default="H-bond-occupancy", type=str, required=False,help="output-filename")
 
 args = parser.parse_args()
