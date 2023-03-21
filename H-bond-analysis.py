@@ -61,12 +61,12 @@ def find_important_H_bond(file,occupancy=occupancy,start=start,stop=stop):
     o=[]
     for i in range (len(p)):
         if i >1: 
-            if ((int(p[i].split()[0][3:-5])>start and int(p[i].split()[0][3:-5])<stop) or (int(p[i].split()[1][3:-5])>start and int(p[i].split()[1][3:-5])<stop)) and float(p[i].split()[2][:-1])>occupancy:
+            if ((int(p[i].split()[0][3:-5])>start and int(p[i].split()[0][3:-5])<stop) or (int(p[i].split()[1][3:-5])>start and int(p[i].split()[1][3:-5])<stop)) and float(p[i].split()[2][:-1])>=occupancy:
                 d=int(p[i].split()[0][3:-5])
                 a=int(p[i].split()[1][3:-5])
                 if d > a:
                     ids.append(p[i].split()[1][:-5]+" "+p[i].split()[0][:-5])
-                if a > d:
+                if a >= d:
                     ids.append(p[i].split()[0][:-5]+" "+p[i].split()[1][:-5])
                 o.append(float(p[i].split()[2][:-1]))
     return o,ids
