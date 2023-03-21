@@ -76,7 +76,7 @@ def get_unique_occupancy(pairs,array):
     for i in range (len(pairs)):
         for j in range (len(array[1])):
             if pairs[i]==array[1][j]:  
-                occ[i]=array[0][j]
+                occ[i]=occ[i]+array[0][j]
     return occ
 
 
