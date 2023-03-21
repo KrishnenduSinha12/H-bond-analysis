@@ -29,8 +29,7 @@ parser.add_argument("-wait",default=2000, type=int, required=False,help="Waiting
 parser.add_argument("-start",default=1, type=int, help="starting residue",required=False)
 parser.add_argument("-stop",default=1000, type=int, help="stop residue",required=False)
 parser.add_argument("-occupancy",default=0, type=float, required=False,help="minimum occupancy")
-parser.add_argument("-lower",default=20, type=float, required=False,help="If all the systems have values lower than this then this pair will not be considered")
-parser.add_argument("-higher",default=60, type=float, required=False,help="If all the systems have values higher than this then this pair will not be considered")
+parser.add_argument("-difference",default=15, type=float, required=False,help="If difference of hydrogen bond occupancy highest and lowest value is less than difference then this pair will not be considered")
 parser.add_argument("-o",default="H-bond-occupancy", type=str, required=False,help="output-filename")
 
 args = parser.parse_args()
@@ -53,8 +52,7 @@ wait =args.wait
 start = args.start
 stop = args.stop
 occupancy = args.occupancy
-lower = args.lower
-higher = args.higher
+
 output =args.o
 
 
@@ -83,15 +81,11 @@ def get_unique_occupancy(pairs,array):
                 occ[i]=occ[i]+array[0][j]
     return occ
 
-def process_dataframe(DataFrame, lower_cutoff, upper_cutoff):
-    Systems=[]
-    Arr=[]
-    Index=[]
-    for i in range (len(DataFrame.columns[2:])):
-        Systems.append(str(DataFrame.columns[2:][i]))
-        Arr.append(pd.Series(DataFrame[Systems[i]]))
-        Index.append(np.where(Arr[i] < cutoff)[0].tolist())
-    remove_index= list(reduce(lambda i, j: i & j, (set(x) for x in Index)))
+def process_dataframe_new(DataFrame, difference):
+    minimum= DataFrame.min(numeric_only=True, axis=1)
+    maximum= DataFrame.max(numeric_only=True, axis=1)
+    diff=maximum-minimum
+    remove_index=np.where(diff< difference)[0].tolist()
     New_data_frame=DataFrame.drop(remove_index, axis=0)
     return New_data_frame
 
@@ -170,7 +164,7 @@ rows=rowname.T
 
 df = pd.DataFrame(rows, columns=colname)
 
-df_new=process_dataframe(df, lower, higher)
+df_new=process_dataframe(df, difference)
 df_new.sort_values("#Resid1")
 
 df_new.to_csv(output+".csv",index=False,sep="\t")
