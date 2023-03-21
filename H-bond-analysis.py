@@ -142,29 +142,31 @@ unique_pairs=np.unique(unique_pairs)
 for i in range (len(Pairs)):
     Systems[i]=get_unique_occupancy(unique_pairs,Pairs[i])
 
-Resid1=[]
-Resid2=[]
-for i in range (len(unique_pairs)):
-    Resid1.append(unique_pairs[i].split()[0])
-    Resid2.append(unique_pairs[i].split()[1])
-
 Resid1=pd.Series(Resid1)
 Resid2=pd.Series(Resid2)
 for i in range (len(Systems)):
     Systems[i]=pd.Series(Systems[i])
 
-colname=["#Resid1","Resid2"]
+colname=[]
 for i in range (len(Systems)):
     colname.append("System"+str(i+1))
 rowname=[Resid1,Resid2]
 for j in range (len(Systems)):
     rowname.append(Systems[j])
-rowname=np.array(rowname)
+rowname=np.array(rowname, )
 rows=rowname.T
 
-df = pd.DataFrame(rows, columns=colname)
+df = pd.DataFrame()
+df["#Resid1"]=rows[:, 0]
+df["Resid2"]=rows[:, 1]
+for i in range (len(colname)):
+    df["System"+str(i+1)]=np.array(rows[:, 2+i], dtype=float)
 
 df_new=process_dataframe(df, difference)
+df_new.sort_values("#Resid1")
+
+
+
 df_new.sort_values("#Resid1")
 
 df_new.to_csv(output+".csv",index=False,sep="\t")
