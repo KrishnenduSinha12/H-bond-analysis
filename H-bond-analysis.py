@@ -6,7 +6,7 @@ import glob
 import pandas as pd
 import argparse
 import shutil
-
+from functools import reduce
 
 
 parser = argparse.ArgumentParser(description='Create a H-bond occupancy table for similar systems')
@@ -78,6 +78,19 @@ def get_unique_occupancy(pairs,array):
             if pairs[i]==array[1][j]:  
                 occ[i]=occ[i]+array[0][j]
     return occ
+
+def process_dataframe(DataFrame, cutoff):
+    Systems=[]
+    Arr=[]
+    Index=[]
+    for i in range (len(DataFrame.columns[2:])):
+        Systems.append(str(DataFrame.columns[2:][i]))
+        Arr.append(pd.Series(DataFrame[Systems[i]]))
+        Index.append(np.where(Arr[i] < cutoff)[0].tolist())
+    remove_index= list(reduce(lambda i, j: i & j, (set(x) for x in Index)))
+    New_data_frame=DataFrame.drop(remove_index, axis=0)
+    return New_data_frame
+
 
 
 ############################Test if required software is present #####################################
@@ -152,8 +165,10 @@ rowname=np.array(rowname)
 rows=rowname.T
 
 df = pd.DataFrame(rows, columns=colname)
-print(df)
 
-df.to_csv(output+".csv",index=False,sep="\t")
+df_new=process_dataframe(df, cutoff=20)
+df_new.sort_values("#Resid1")
+
+df_new.to_csv(output+".csv",index=False,sep="\t")
 
 exit()
