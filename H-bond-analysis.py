@@ -29,7 +29,7 @@ parser.add_argument("-wait",default=2000, type=int, required=False,help="Waiting
 parser.add_argument("-start",default=1, type=int, help="starting residue",required=False)
 parser.add_argument("-stop",default=1000, type=int, help="stop residue",required=False)
 parser.add_argument("-occupancy",default=0, type=float, required=False,help="minimum occupancy")
-parser.add_argument("-difference",default=15, type=float, required=False,help="If difference of hydrogen bond occupancy highest and lowest value is less than difference then this pair will not be considered")
+parser.add_argument("-difference",default=15, type=float, required=False,help="If difference of hydrogen bond highest and lowest occupancy value is less than difference then this pair will not be considered")
 parser.add_argument("-o",default="H-bond-occupancy", type=str, required=False,help="output-filename")
 
 args = parser.parse_args()
@@ -51,6 +51,7 @@ wait =args.wait
 
 start = args.start
 stop = args.stop
+difference = args.difference
 occupancy = args.occupancy
 
 output =args.o
@@ -81,7 +82,7 @@ def get_unique_occupancy(pairs,array):
                 occ[i]=occ[i]+array[0][j]
     return occ
 
-def process_dataframe_new(DataFrame, difference):
+def process_dataframe(DataFrame, difference):
     minimum= DataFrame.min(numeric_only=True, axis=1)
     maximum= DataFrame.max(numeric_only=True, axis=1)
     diff=maximum-minimum
@@ -90,8 +91,6 @@ def process_dataframe_new(DataFrame, difference):
     return New_data_frame
 
 
-
-############################Test if required software is present #####################################
 if shutil.which('vmd')==None:
     "print VMD not present in your system please install VMD"
 
@@ -142,6 +141,12 @@ unique_pairs=np.unique(unique_pairs)
 for i in range (len(Pairs)):
     Systems[i]=get_unique_occupancy(unique_pairs,Pairs[i])
 
+Resid1=[]
+Resid2=[]
+for i in range (len(unique_pairs)):
+    Resid1.append(unique_pairs[i].split()[0])
+    Resid2.append(unique_pairs[i].split()[1])
+
 Resid1=pd.Series(Resid1)
 Resid2=pd.Series(Resid2)
 for i in range (len(Systems)):
@@ -172,3 +177,6 @@ df_new.sort_values("#Resid1")
 df_new.to_csv(output+".csv",index=False,sep="\t")
 
 exit()
+#
+
+
