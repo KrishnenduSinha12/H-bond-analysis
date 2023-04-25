@@ -111,12 +111,12 @@ for i in range (len(F)):
     print("system"+str(i+1))
     with open(F[i]+'/input_script.vmd', 'w') as f:
         if sel2!="none":
-            str1="mol addfile "+XTCS[i]+" first "+str(initial_frame)+" last "+str(final_frame)+" step "+str(step)+" waitfor 2000 \n"
+            str1="mol addfile "+XTCS[i]+" first "+str(initial_frame)+" last "+str(final_frame)+" step "+str(step)+" waitfor "+str(wait)+" \n"
             str2="source "+TCL_Path+" \n set sel1 [atomselect top "+sel1+" ] \n"
             str3="hbonds -sel1 $sel1 -sel2 $sel2 -dist "+str(dist)+" -ang "+str(ang)+" -polar "+polar+" -DA "+DA+" -writefile yes -plot no -outfile "+F[i]+"/hbonds.dat -type pair -detailout "+F[i]+"/hbonds-details.dat \n"
             str4="exit"
         else:
-            str1="mol addfile "+XTCS[i]+" first "+str(initial_frame)+" last "+str(final_frame)+" step "+str(step)+" waitfor 2000 \n"
+            str1="mol addfile "+XTCS[i]+" first "+str(initial_frame)+" last "+str(final_frame)+" step "+str(step)+" waitfor "str(wait)+" \n"
             str2="source " +TCL_Path+" \n set sel1 [atomselect top "+sel1+" ] \n set sel2 [atomselect top "+sel2+" ] \n"
             str3="hbonds -sel1 $sel1 -dist "+str(dist)+" -ang "+str(ang)+" -polar "+polar+" -DA "+DA+" -writefile yes -plot no -outfile "+F[i]+"/hbonds.dat -type pair -detailout "+F[i]+"/hbonds-details.dat \n"
             str4="exit"
